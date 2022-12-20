@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://flightBrowse.caption"
+        focusComponent="flightsTable">
+    <data readOnly="true">
+
+        <collection id="flightsDc"
+                    class="com.sample.airtickets.entity.Flight">
+            <fetchPlan extends="_base">
+                <property name="fromAirport" fetchPlan="_base"/>
+                <property name="toAirport" fetchPlan="_base"/>
+                <property name="airline" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="flightsDl">
+                <query>
+                    <![CDATA[select e from Flight e]]>
+                    <condition>
+                        <or>
+                            <c:jpql>
+                                <c:where>
+                                    e.fromAirport = :aiport
+                                </c:where>
+                            </c:jpql>
+                            <c:jpql>
+                                <c:where>
+                                    e.toAirport = :aiport
+                                </c:where>
+                            </c:jpql>
+                            <c:jpql>
+                                <c:where>
+                                    e.takeOffDate >= :takeOffFrom
+                                </c:where>
+                            </c:jpql>takeOffTo
+                            <c:jpql>
+                                <c:where>
+                                    :takeOffTo > e.takeOffDate
+                                </c:where>
+                            </c:jpql>
+                        </or>
+                    </condition>
+                </query>
+            </loader>
+        </collection>
+
+        <instance id="flightDc" class="com.sample.airtickets.entity.Flight">
+            <fetchPlan extends="_base">
+                <property name="airline" fetchPlan="_instance_name"/>
+            </fetchPlan>
+            <loader id="flightDl"/>
+        </instance>
+
+        <collection id="airportsDc" class="com.sample.airtickets.entity.Airport">
+            <fetchPlan extends="_local"/>
+            <loader id="airportsDl">
+                <query>
+                    <![CDATA[select e from Airport e]]>
+                </query>
+            </loader>
+        </collection>
+
+    </data>
+    <facets>
+        <screenSettings id="settingsFacet" auto="true"/>
+        <dataLoadCoordinator auto="true">
+            <refresh loader="flightsDl">
+                <onScreenEvent type="BeforeShow"/>
+                <onComponentValueChanged component="aiportComboBox"
+                                         param="aiport"/>
+                <onComponentValueChanged component="takeOffFrom"
+                                         param="takeOffFrom"/>
+                <onComponentValueChanged component="takeOffTo"
+                                         param="takeOffTo"/>
+            </refresh>
+        </dataLoadCoordinator>
+
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="flightsTable" spacing="true">
+        <groupBox id="staticFilter">
+            <entityComboBox id="aiportComboBox"
+                            dataContainer="flightDc"
+                            property="airline"
+                            optionsContainer="airportsDc" caption="Airport"/>
+            <dateField id="takeOffFrom" caption="Take off from" datatype="offsetDateTime"/>
+            <dateField id="takeOffTo" caption="Take off to" datatype="offsetDateTime"/>
+        </groupBox>
+        <groupTable id="flightsTable"
+                    width="100%"
+                    dataContainer="flightsDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="number"/>
+                <column id="fromAirport"/>
+                <column id="toAirport"/>
+                <column id="airline"/>
+                <column id="takeOffDate"/>
+            </columns>
+            <simplePagination/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="flightsTable.create"/>
+                <button id="editBtn" action="flightsTable.edit"/>
+                <button id="removeBtn" action="flightsTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>
