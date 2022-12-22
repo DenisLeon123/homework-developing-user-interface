@@ -7,10 +7,13 @@
     </menu>
 
     <menu id="referenceData" caption="Reference data" insertBefore="administration" icon="BOOK">
-<!--        <item screen="themeSettingsScreen" caption="msg://io.jmix.ui.app.themesettings/themeSettings.caption"/>-->
         <item screen="Airline.browse" caption="msg://com.sample.airtickets.screen.airline/airlineBrowse.menu"/>
         <item screen="Airport.browse" caption="msg://com.sample.airtickets.screen.airport/airportBrowse.menu"/>
         <item screen="Flight.browse" caption="msg://com.sample.airtickets.screen.flight/flightBrowse.menu"/>
+        <item screen="Ticket.browse" caption="msg://com.sample.airtickets.screen.ticket/ticketBrowse.menu"/>
     </menu>
+    <item screen="TicketReservation"
+          caption="msg://com.sample.airtickets.screen.ticketreservation/ticketReservation.caption"
+          insertBefore="administration" icon="TICKET"/>
 
 </menu-config>

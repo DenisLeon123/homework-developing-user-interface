@@ -30,7 +30,7 @@ public class TicketService {
 
         // heavy search...
         try {
-            Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 2000));
+            Thread.sleep(ThreadLocalRandom.current().nextInt(3000, 5000));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -61,7 +61,14 @@ public class TicketService {
     /*
      * Assign unique reservation ID and save ticket to database.
      */
-    public Ticket saveTicket(Ticket ticket) {
+    public Ticket saveTicket(String passengerName, String passportNumber, String telephone, Flight flight) {
+
+        Ticket ticket = dataManager.create(Ticket.class);
+        ticket.setPassengerName(passengerName);
+        ticket.setPassportNumber(passportNumber);
+        ticket.setTelephone(telephone);
+        ticket.setFlight(flight);
+
         int reservationId = ThreadLocalRandom.current().nextInt(1000, 9999);
         ticket.setReservationId(Integer.toString(reservationId));
 

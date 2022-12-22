@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://ticketReservation.caption">
+
+    <data>
+        <collection id="flightsDc" class="com.sample.airtickets.entity.Flight">
+            <fetchPlan extends="_base">
+                <property name="fromAirport" fetchPlan="_base"/>
+                <property name="toAirport" fetchPlan="_base"/>
+                <property name="airline" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="flightsDl">
+                <query>
+                    <![CDATA[select e from Flight e]]>
+                </query>
+            </loader>
+        </collection>
+
+        <instance id="flightDc" class="com.sample.airtickets.entity.Flight">
+            <fetchPlan extends="_base">
+                <property name="airline" fetchPlan="_instance_name"/>
+                <property name="fromAirport" fetchPlan="_base"/>
+                <property name="toAirport" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="flightDl"/>
+        </instance>
+
+        <collection id="airportsDc" class="com.sample.airtickets.entity.Airport">
+            <fetchPlan extends="_local"/>
+            <loader id="airportsDl">
+                <query>
+                    <![CDATA[select e from Airport e]]>
+                </query>
+            </loader>
+        </collection>
+
+    </data>
+
+    <facets>
+        <screenSettings id="settingsFacet" auto="true"/>
+        <dataLoadCoordinator auto="true"/>
+
+        <inputDialog id="reserveTicket"
+                     caption="Reserve ticket">
+            <parameters>
+                <stringParameter id="passengerName"
+                                 caption="Passenger name"
+                                 required="true"/>
+                <stringParameter id="passportNumber"
+                                 caption="Passport number"
+                                 required="true"/>
+                <stringParameter id="telephone"
+                                 caption="Telephone"
+                                 required="true"/>
+            </parameters>
+        </inputDialog>
+    </facets>
+
+    <actions>
+        <action id="filterSearch"
+                caption="Search"
+                icon="SEARCH"/>
+    </actions>
+
+    <layout expand="flightsTable" spacing="true">
+        <groupBox id="filter" spacing="true">
+            <entityComboBox id="fromSelector"
+                            dataContainer="flightDc"
+                            property="fromAirport"
+                            optionsContainer="airportsDc" caption="From">
+                <actions>
+                    <action id="lookup" type="entity_lookup"/>
+                    <action id="clear" type="entity_clear"/>
+                </actions>
+            </entityComboBox>
+            <entityComboBox id="toSelector"
+                            dataContainer="flightDc"
+                            property="toAirport"
+                            optionsContainer="airportsDc" caption="To">
+                <actions>
+                    <action id="lookup" type="entity_lookup"/>
+                    <action id="clear" type="entity_clear"/>
+                </actions>
+            </entityComboBox>
+            <dateField id="departureDateSelector"
+                       caption="Departure date"
+                       datatype="localDate"
+                       dateFormat="dd/MM/yy"/>
+
+            <hbox id="hboxFilterBtn" spacing="true">
+                <button action="filterSearch" caption="Search"/>
+            </hbox>
+        </groupBox>
+        <progressBar id="progressBarSearch" indeterminate="true" stylename="indeterminate-circle" visible="false"/>
+        <table id="flightsTable" width="100%" dataContainer="flightsDc">
+            <columns>
+                <column id="number"/>
+                <column id="takeOffDate"/>
+                <column id="fromAirport"/>
+                <column id="toAirport"/>
+                <column id="airline"/>
+                <column id="action" caption="Actions"/>
+            </columns>
+        </table>
+    </layout>
+</window>
